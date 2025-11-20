@@ -17,6 +17,7 @@ const colorStore = useColorStore();
 
 .test_class{
   background-color: red;
+  color: blue;
 }
 
 </style>
