@@ -4,7 +4,7 @@ import Firebase from "../firebase_settings/index.js"
 import { useTodoStore } from '@/stores/todo';
 import { onAuthStateChanged } from 'firebase/auth';
 import { computed, onMounted } from 'vue';
-import { BUTTON_SIZE, BUTTON_TYPE, COLOR_TYPE } from "@/scripts/const.js";
+import { BUTTON_SIZE, BUTTON_TYPE, COLOR_TYPE, CATEGORY_COLOR_INFO } from "@/scripts/const.js";
 import ButtonMain from "./ButtonMain.vue";
 
 
@@ -45,13 +45,21 @@ onMounted(() => {
         <thead>
             <tr>
                 <th>date</th>
-                <th v-for="category in todoStore.sortedListCategory">{{ category.name }}</th>
+                <th v-for="category in todoStore.sortedListCategory"
+                    :style="{color: CATEGORY_COLOR_INFO[category.colorId]?.textColor,
+                                background: CATEGORY_COLOR_INFO[category.colorId]?.heavyColor
+                            }"
+                >{{ category.name }}</th>
             </tr>
         </thead>
         <tbody>
             <tr v-for="date in todoStore.getDateSpan">
                 <td>{{ formatDate(date) }}</td>
-                <td v-for="category in todoStore.sortedListCategory">
+                <td v-for="category in todoStore.sortedListCategory"
+                    :style="{color: CATEGORY_COLOR_INFO[category.colorId]?.textColor,
+                                background: CATEGORY_COLOR_INFO[category.colorId]?.color
+                            }"
+                >
                     <div v-for="item in todoStore.getTodoListAt(date, category.id) " class="calendar_item_container">
                         <span class="calendar_item_content">{{ item.title }}</span>
                         <ButtonMain 
@@ -77,14 +85,6 @@ onMounted(() => {
     }   
     td{
         border: 1px solid v-bind(colorStyle.border);
-    }
-    col:nth-child(even){
-        color: v-bind(colorStyle.onBackgroundLight);
-        background-color: v-bind(colorStyle.backgroundLight);
-    }
-    col:nth-child(odd){
-        color: v-bind(colorStyle.onBackgroundHeavy);
-        background-color: v-bind(colorStyle.backgroundHeavy);;
     }
 }
 .calendar_item_container{

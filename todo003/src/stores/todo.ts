@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, Firestore, getDocs, limit, orderBy, query, serverTimestamp, Timestamp, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, Firestore, getDocs, limit, orderBy, query, runTransaction, serverTimestamp, Timestamp, updateDoc, where } from "firebase/firestore";
 import { defineStore } from "pinia";
 import Firebase from "../firebase_settings/index.js"
 import { CATEGORY_COLOR_INFO } from "@/scripts/const.js";
@@ -16,7 +16,8 @@ export const useTodoStore = defineStore("todo", {
                             categoryId: string}>,
     listCategory: [] as Array<{id: string,
                                 name: string,
-                                colorId: string}>,
+                                colorId: string,
+                                priority: number}>,
     dataTodo: {} as {[categoryId: string]: Array<{
                             id: string, 
                             createdAt: Date, 
@@ -83,8 +84,10 @@ export const useTodoStore = defineStore("todo", {
     },
     sortedListCategory(): Array<{id: string,
                                 name: string,
-                                colorId: string}>{
-      return this.listCategory.sort((a, b) => a.name.localeCompare(b.name));
+                                colorId: string,
+                                priority: number}>{
+      //return this.listCategory.sort((a, b) => a.name.localeCompare(b.name));
+      return this.listCategory.sort((a, b) => a.priority - b.priority);
     }
   },
   
@@ -108,7 +111,10 @@ export const useTodoStore = defineStore("todo", {
         console.log(querySnapshot.docs.length);
 
         querySnapshot.docs.forEach((doc) => {
-          this.listCategory.push({id: doc.id, name: doc.data().name, colorId: doc.data().colorId});
+          this.listCategory.push({id: doc.id, 
+                                  name: doc.data().name, 
+                                  colorId: doc.data().colorId, 
+                                  priority: doc.data().priority});
         });
       } catch (error) {
             console.error("Error getting posts: ", error);
@@ -230,12 +236,14 @@ export const useTodoStore = defineStore("todo", {
         alert("エラーが発生しました")
       }
     },
-    async addCategory(name: string){
+    async addCategory(name: string, colorId: string){
       const docRef = collection(this.$state.db, "userData", this.$state.userId, "category");
       try {
         await addDoc(docRef, {
          name: name,
          deletedAt: null,
+         colorId: colorId,
+         priority: 0
         });
       } catch(error) {
         console.log(error)
@@ -339,6 +347,24 @@ export const useTodoStore = defineStore("todo", {
         console.log(error)
         alert("エラーが発生しました")
       }
+    },
+    async updateCategoryStyle(newListCategory: Array<{id: string,
+                                                name: string,
+                                                colorId: string,
+                                                priority: number}>){
+      await runTransaction(this.$state.db, async (transaction) => {
+        this.listCategory.forEach(category => {
+          newListCategory.forEach(newCategory => {
+            if(category.id == newCategory.id){
+              if(category.name != newCategory.name || category.colorId != newCategory.colorId || category.priority != newCategory.priority){
+                const categoryRef = doc(this.db, `userData/${this.$state.userId}/category/${category.id}`);
+                //const categorySnap = await transaction.get(categoryRef)
+                transaction.update(categoryRef, {name: newCategory.name, colorId: newCategory.colorId, priority: newCategory.priority})
+              }
+            }
+          })
+        })
+      })
     }
   },
 

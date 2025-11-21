@@ -9,7 +9,7 @@ export const DIALOG_TYPE = {
 }
 
 export const RESPONSE_TYPE = {
-    OK: "ok",
+    OK: "close",
     CANCEL: "cancel",
 }
 
@@ -153,22 +153,134 @@ export const CATEGORY_COLOR_INFO: {[id: string]: {id: string,
     "category_color_01": {
         id:    "category_color_01",
         name: "red",
-        color: "#FF0000",
-        heavyColor: "#660000",
+        color: "#FFEBEE",
+        heavyColor: "#FFCDD2",
         textColor: "#000000"
     },
     "category_color_02": {
         id:    "category_color_02",
         name: "green",
-        color: "#00FF00",
-        heavyColor: "#006600",
+        color: "#FCE4EC",
+        heavyColor: "#F8BBD0",
         textColor: "#000000"
     },
     "category_color_03": {
         id:    "category_color_03",
         name: "blue",
-        color: "#0000FF",
-        heavyColor: "#000066",
+        color: "#F3E5F5",
+        heavyColor: "#E1BEE7",
         textColor: "#000000"
-    }
+    },
+    "category_color_04": {
+        id:    "category_color_04",
+        name: "blue",
+        color: "#EDE7F6",
+        heavyColor: "#D1C4E9",
+        textColor: "#000000"
+    },
+    "category_color_05": {
+        id:    "category_color_05",
+        name: "blue",
+        color: "#E8EAF6",
+        heavyColor: "#D1C4E9",
+        textColor: "#000000"
+    },
+    "category_color_06": {
+        id:    "category_color_06",
+        name: "blue",
+        color: "#E3F2FD",
+        heavyColor: "#BBDEFB",
+        textColor: "#000000"
+    },
+    "category_color_07": {
+        id:    "category_color_07",
+        name: "blue",
+        color: "#E1F5FE",
+        heavyColor: "#B3E5FC",
+        textColor: "#000000"
+    },
+    "category_color_08": {
+        id:    "category_color_08",
+        name: "blue",
+        color: "#E3F2FD",
+        heavyColor: "#B2EBF2",
+        textColor: "#000000"
+    },
+    "category_color_09": {
+        id:    "category_color_09",
+        name: "blue",
+        color: "#E0F2F1",
+        heavyColor: "#B2DFDB",
+        textColor: "#000000"
+    },
+    "category_color_10": {
+        id:    "category_color_10",
+        name: "blue",
+        color: "#E8F5E9",
+        heavyColor: "#C8E6C9",
+        textColor: "#000000"
+    },
+    "category_color_11": {
+        id:    "category_color_11",
+        name: "blue",
+        color: "#F1F8E9",
+        heavyColor: "#DCEDC8",
+        textColor: "#000000"
+    },
+    "category_color_12": {
+        id:    "category_color_12",
+        name: "blue",
+        color: "#F9FBE7",
+        heavyColor: "#F0F4C3",
+        textColor: "#000000"
+    },
+    "category_color_13": {
+        id:    "category_color_13",
+        name: "blue",
+        color: "#FFFDE7",
+        heavyColor: "#FFF9C4",
+        textColor: "#000000"
+    },
+    "category_color_14": {
+        id:    "category_color_14",
+        name: "blue",
+        color: "#FFF8E1",
+        heavyColor: "#FFECB3",
+        textColor: "#000000"
+    },
+    "category_color_15": {
+        id:    "category_color_15",
+        name: "blue",
+        color: "#FFECB3",
+        heavyColor: "#FFE0B2",
+        textColor: "#000000"
+    },
+    "category_color_16": {
+        id:    "category_color_16",
+        name: "blue",
+        color: "#FBE9E7",
+        heavyColor: "#FFCCBC",
+        textColor: "#000000"
+    },
+    "category_color_17": {
+        id:    "category_color_17",
+        name: "blue",
+        color: "#EFEBE9",
+        heavyColor: "#D7CCC8",
+        textColor: "#000000"
+    },
+    "category_color_18": {
+        id:    "category_color_18",
+        name: "blue",
+        color: "#FAFAFA",
+        heavyColor: "#F5F5F5",
+        textColor: "#000000"
+    },
+    "category_color_19": {
+        id:    "category_color_19",
+        name: "blue",
+        color: "#ECEFF1",
+        heavyColor: "#CFD8DC",
+        textColor: "#000000"
+    },
 }

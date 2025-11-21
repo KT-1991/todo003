@@ -25,7 +25,8 @@ let resolve: (color: string) => void
 
 // 外部に公開するAPI。ダイアログを開いて、終了
 async function openDialog(colorId: string) {
-    initialColorId.value = colorId
+  initialColorId.value = colorId
+  selectedColorId.value = colorId
   open.value = true
   dialog?.value?.showModal()
   const promise = new Promise<string>((res) => {
@@ -73,15 +74,15 @@ onUnmounted(() => {
   <dialog ref="dialog" class="modal_dialog">
     <div v-if="open">
         <div class="modal_title">色の選択</div>
-        <div v-for="item in CATEGORY_COLOR_INFO">
+        <div class="modal_color_list" v-for="item in CATEGORY_COLOR_INFO">
             <ButtonColor 
                 :button-type="BUTTON_TYPE.PRIMARY" 
                 :button-size="BUTTON_SIZE.SHORT"
                 :color="item.color"
                 :heavy-color="item.heavyColor"
                 :text-color="item.textColor"
-                v-on:click="changeColor(item.id)">color</ButtonColor>
-            <div :style="{color: item.textColor, background: item.color}">color</div>
+                v-on:click="changeColor(item.id)"
+                :class="{selected: item.id == selectedColorId}">color</ButtonColor>
         </div>
       <div class="modal_action">
         <ButtonMain :button-type="BUTTON_TYPE.PRIMARY" class="modal_button" v-on:click="onDialogAction('ok')">OK</ButtonMain> 
@@ -109,6 +110,11 @@ onUnmounted(() => {
     white-space: pre-wrap;
     background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.secondary));
 }
+
+.modal_color_list {
+  overflow-y: scroll;
+}
+
 .modal_action {
     display: flex;
     flex-direction: row;
@@ -122,5 +128,8 @@ onUnmounted(() => {
 .modal_icon {
     display: flex;
     justify-content: center;
+}
+.selected {
+  border: 5px solid red;
 }
 </style>
