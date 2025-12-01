@@ -1,4 +1,5 @@
 <script setup lang="ts">
+//@ts-ignore
 import Firebase from "../firebase_settings/index.js"
 import { useTodoStore } from '@/stores/todo';
 import { onMounted, reactive, ref, TransitionGroup, type Ref } from 'vue';

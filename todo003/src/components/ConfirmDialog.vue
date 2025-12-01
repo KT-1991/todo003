@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, Ref, ref } from 'vue'
+import { onMounted, onUnmounted, type Ref, ref } from 'vue'
 import { BUTTON_TYPE, DIALOG_TYPE, RESPONSE_TYPE } from '@/scripts/const'
 import { useColorStore } from '@/stores/color';
 import { COLOR_TYPE } from '@/scripts/const';

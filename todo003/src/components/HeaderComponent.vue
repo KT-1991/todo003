@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import router from "@/router/index.js";
+//@ts-ignore
 import Firebase from "../firebase_settings/index.js"
 import { useTodoStore } from '@/stores/todo';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
@@ -128,6 +129,10 @@ onMounted(() => {
             :button-type="BUTTON_TYPE.TERTIARY" 
             :button-size="BUTTON_SIZE.SHORT"
             v-on:click="goToPage('/log')">ログ</ButtonMain>
+        <ButtonMain 
+            :button-type="BUTTON_TYPE.TERTIARY" 
+            :button-size="BUTTON_SIZE.SHORT"
+            v-on:click="goToPage('/food')">test</ButtonMain>
         <LoadingAnimationComponent02 v-if="isLoading"/>
         <ToastComponent ref="toast"/>
     </div>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { signOut, onAuthStateChanged } from "firebase/auth";
+//@ts-ignore
 import Firebase from "../firebase_settings/index.js"
 import { onMounted, ref } from "vue";
 import router from "@/router/index.js";

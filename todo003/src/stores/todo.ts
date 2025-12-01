@@ -1,5 +1,6 @@
 import { addDoc, collection, doc, Firestore, getDocs, limit, orderBy, query, runTransaction, serverTimestamp, Timestamp, updateDoc, where } from "firebase/firestore";
 import { defineStore } from "pinia";
+//@ts-ignore
 import Firebase from "../firebase_settings/index.js"
 import { CATEGORY_COLOR_INFO } from "@/scripts/const.js";
 
@@ -36,7 +37,7 @@ export const useTodoStore = defineStore("todo", {
     suggestions: [] as Array<string>,
   }),
   getters: {
-    getTodoData(): {[categoryId: string]: Array<{}>} {
+    getTodoData(): {[categoryId: string]: Array<any>} {
       const data: {[categoryId: string]: Array<{}>} = {};
       this.listCategory.forEach(category => {
           const list: any = [];
@@ -250,7 +251,7 @@ export const useTodoStore = defineStore("todo", {
         alert("エラーが発生しました")
       }
     },
-    sortByDate(todoData: {[id: string]: Array<{}>}){
+    sortByDate(todoData: {[id: string]: Array<any>}){
       this.listCategory.forEach(category => {
         todoData[category.id]?.sort((a, b): number => {
           const sign: number = this.compareTime(a.doAt, b.doAt);
@@ -262,7 +263,7 @@ export const useTodoStore = defineStore("todo", {
         })
       });
     },
-    sortByTitle(todoData: {[id: string]: Array<{}>}){
+    sortByTitle(todoData: {[id: string]: Array<any>}){
       this.listCategory.forEach(category => {
         todoData[category.id]?.sort((a, b): number => {
           const sign: number = this.compareTitle(a.title, b.title);

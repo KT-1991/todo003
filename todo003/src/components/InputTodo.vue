@@ -1,4 +1,5 @@
 <script setup lang="ts">
+//@ts-ignore
 import Firebase from "../firebase_settings/index.js"
 import { useTodoStore } from '@/stores/todo';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -39,7 +40,7 @@ const register = async () => {
             // 書き込み終了
             isLoading.value = false
             //confirmDialog.value!.openDialog(DIALOG_TYPE.INFO ,"title", "detail")
-            toast.value.sendToast("registered");
+            toast.value!.sendToast("registered");
 }
 const getSuggestion = (text: string) => {
     title.value = text;

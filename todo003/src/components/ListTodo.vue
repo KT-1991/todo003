@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useColorStore } from "@/stores/color.js";
+//@ts-ignore
 import Firebase from "../firebase_settings/index.js"
 import { useTodoStore } from '@/stores/todo';
 import { onAuthStateChanged } from 'firebase/auth';
