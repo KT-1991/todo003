@@ -10,14 +10,15 @@ const colorStore = useColorStore();
 </script>
 
 <template>
-  <RouterView />
+  <div class="test_class">
+    <RouterView/>
+  </div>
 </template>
 
 <style>
 
 .test_class{
-  background-color: red;
-  color: blue;
+  background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.gray));
 }
 
 </style>

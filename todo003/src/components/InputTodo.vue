@@ -3,7 +3,7 @@
 import Firebase from "../firebase_settings/index.js"
 import { useTodoStore } from '@/stores/todo';
 import { onAuthStateChanged } from 'firebase/auth';
-import { onMounted, ref, type Ref } from 'vue';
+import { nextTick, onMounted, ref, type Ref } from 'vue';
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { BUTTON_TYPE, BUTTON_SIZE, COLOR_TYPE, DIALOG_TYPE } from "@/scripts/const.js";
 import ButtonMain from "./ButtonMain.vue";
@@ -11,6 +11,7 @@ import { useColorStore } from "@/stores/color.js";
 import ConfirmDialog from "./ConfirmDialog.vue";
 import ToastComponent from "./ToastComponent.vue";
 import LoadingAnimationComponent02 from "./LoadingAnimationComponent02.vue";
+import { useSizeStore } from "@/stores/size.js";
 
 const auth = Firebase.auth
 const todoStore = useTodoStore();
@@ -24,6 +25,8 @@ const colorStore = useColorStore();
 const isMalingSuggestions = ref(false);
 const confirmDialog: Ref<typeof ConfirmDialog | undefined>= ref();
 const toast: Ref<typeof ToastComponent | undefined> = ref();
+const elemInputContainer = ref();
+const sizeStore = useSizeStore();
 
 const register = async () => {
             // 書き込み開始
@@ -45,8 +48,10 @@ const register = async () => {
 const getSuggestion = (text: string) => {
     title.value = text;
 }
-const openDetail = () => {
+const openDetail = async () => {
     showDetail.value = !showDetail.value;
+    await nextTick();
+    sizeStore.heightInput = elemInputContainer.value.offsetHeight;
 }
 const makeSuggestions = async () => {
     //if(isMalingSuggestions.value){
@@ -56,14 +61,21 @@ const makeSuggestions = async () => {
     await todoStore.makeSuggestions(title.value);
     isMalingSuggestions.value = false;
 }
+onMounted(() => {
+    sizeStore.heightInput = elemInputContainer.value.offsetHeight;
+})
 </script>
 
 <template>
-    <div class="input_title" v-on:click="openDetail">
-        <div>追加する</div>
-        <div class="arrow" :class="{arrow_rotate:showDetail}"> ▼ </div>
-    </div>
-        <div v-show="showDetail" class="input_container">
+    <div ref="elemInputContainer" class="input_base">
+        <div class="input_container">
+            <ButtonMain 
+                :button-type="BUTTON_TYPE.PRIMARY" 
+                :button-size="BUTTON_SIZE.SHORT"
+                v-on:click="register()">
+                <span class="add_button_text">追加</span>
+            </ButtonMain>       
+            <input class="input_do_at input_item" type="date" placeholder="date" value="0" v-model="doAt">
             <select v-model="selectedCategory" class="input_item">
                 <option disabled value="" >カテゴリー</option>
                 <option v-for="item in todoStore.listCategory" 
@@ -72,14 +84,14 @@ const makeSuggestions = async () => {
                 {{ item.name }}
                 </option>
             </select>
-            <br>
             <input type="text" 
                     placeholder="title" 
                     v-model="title" 
                     v-on:keyup="makeSuggestions" 
                     class="textArea input_item">
-            <br>
-            <div>履歴</div>
+            <textarea class="text_area input_item" v-model="detail" placeholder="detail" ></textarea>       
+        </div> 
+            <div v-show="todoStore.suggestions.length != 0">履歴</div>
             <div class="suggestion_container">
                 <span v-for="value in todoStore.suggestions">
                     <ButtonMain 
@@ -90,18 +102,8 @@ const makeSuggestions = async () => {
                         <span class="suggestion" >{{ value }}</span>
                     </ButtonMain>
                 </span>                
-            </div>
-            <textarea class="textArea input_item" v-model="detail" placeholder="detail" ></textarea>
-            <br>
-            <input class="input_do_at input_item" type="date" placeholder="date" value="0" v-model="doAt">
-            <br>
-            <ButtonMain 
-                :button-type="BUTTON_TYPE.PRIMARY" 
-                :button-size="BUTTON_SIZE.SHORT"
-                v-on:click="register()">
-                <span class="add_button_text">追加</span>
-            </ButtonMain>             
-        </div>    
+            </div>           
+    </div>
     <div class="loading_animation" v-if="isLoading">
         <LoadingAnimationComponent02></LoadingAnimationComponent02>
     </div>
@@ -110,15 +112,31 @@ const makeSuggestions = async () => {
 </template>
 
 <style scoped>
+.input_base{
+    margin: 10px;
+    border: 2px solid black;
+    width: fit-content;
+}
 .input_title{
     display: flex;
     align-items: center;
     padding: 10px 4px 10px 4px;
+    display: block;
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onPrimaryHeavy));
     background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.primaryHeavy));
 }
+.input_title:hover{
+        color: v-bind(colorStore.getColorBy(COLOR_TYPE.onPrimary));
+        background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.primary));
+        display: block;
+}
+
 .input_container{
     padding: 10px;
-    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.primary));
+    display: flex;
+    vertical-align: top;
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onBackground));
+    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.background));
 }
 .arrow{
     transition: 1s;
@@ -130,5 +148,23 @@ const makeSuggestions = async () => {
 }
 .suggestion_container{
     display: flex;
+}
+.input_item {
+    margin-left: 5px;
+    padding: 5px;
+    max-width: 200px;
+    background: white;
+    border: 2px solid black;
+    outline:0;
+    font-size: medium;
+}
+.input_item:focus{
+    border: 3px solid v-bind(colorStore.getColorBy(COLOR_TYPE.primary)); 
+}
+.text_area{
+    field-sizing: content;
+    min-height: min-content;
+    min-width: 100px;
+    vertical-align: top;
 }
 </style>

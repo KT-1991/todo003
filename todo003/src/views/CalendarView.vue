@@ -5,11 +5,13 @@ import CalendarTodo from '@/components/CalendarTodo.vue';
 </script>
 
 <template>
-    <HeaderComponent/>
-    <InputTodo/>
-    <CalendarTodo/>
+    <div class="base_calendar_view">
+        <HeaderComponent/>
+        <InputTodo/>
+        <CalendarTodo/>        
+    </div>
+
 </template>
 
 <style scoped>
-
 </style>

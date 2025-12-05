@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
+//@ts-ignore
 import FoodView from '@/views/FoodView.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import ListView from '@/views/ListView.vue'

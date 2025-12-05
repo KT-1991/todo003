@@ -62,10 +62,6 @@ const getClassButtonSize = (name: string) => {
     display: flex;
     justify-content: center;
     cursor: pointer;
-    border-radius: 5px;
-    :hover{
-        border-radius: 3px;
-    }
 }
 .button_base_size_long {
     width: 100%;
@@ -77,21 +73,27 @@ const getClassButtonSize = (name: string) => {
     width: fit-content;
 }
 .button_base_type_primary {
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onSecondaryHeavy));
     background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.secondaryHeavy));
     :hover{
+        color: v-bind(colorStore.getColorBy(COLOR_TYPE.onSecondary));
         background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.secondary));
     }
 }
 .button_base_type_secondary {
     border: 2px solid v-bind(colorStore.getColorBy(COLOR_TYPE.primaryHeavy));
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onBackground));
     background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.background));
     :hover{
+        color: v-bind(colorStore.getColorBy(COLOR_TYPE.onPrimaryHeavy));
         background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.primaryHeavy));
     }
 }
 .button_base_type_tertiary {
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onBackground));
     background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.background));
     :hover{
+        color: v-bind(colorStore.getColorBy(COLOR_TYPE.onSecondary));
         background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.secondary));
     }
 }

@@ -11,15 +11,18 @@ import { BUTTON_SIZE, BUTTON_TYPE, COLOR_TYPE } from "@/scripts/const.js";
 import { useColorStore } from "@/stores/color.js";
 import LoadingAnimationComponent02 from "./LoadingAnimationComponent02.vue";
 import ToastComponent from "./ToastComponent.vue";
+import { useSizeStore } from "@/stores/size.js";
 
 
 const auth = Firebase.auth
 const route = useRoute();
 const todoStore = useTodoStore();
+const sizeStore = useSizeStore();
 const loginName = ref("");
 const colorStore = useColorStore();
 const isLoading = ref(false);
 const toast: Ref<typeof ToastComponent | undefined> = ref();
+const elemHeaderContainer = ref();
 
 const confirmLogout = () => {
     const result = confirm('ログアウトしますか？')
@@ -95,47 +98,48 @@ onMounted(() => {
         
 
     });
+    console.log(elemHeaderContainer)
+    sizeStore.heightHeader = elemHeaderContainer.value.clientHeight;
 })
 
 </script>
 
 <template>
-    <div class="header_title_container">
-        <div>todo app</div>
-        <div class="login_name">{{ loginName }}</div>
-        <ButtonMain 
-            :button-type="BUTTON_TYPE.SECONDARY" 
-            :button-size="BUTTON_SIZE.SHORT"
-            v-on:click="confirmLogout">Logout</ButtonMain>
+    <div ref="elemHeaderContainer">
+        <div class="header_title_container" >
+            <div>todo app</div>
+            <div class="login_name">{{ loginName }}</div>
+            <ButtonMain 
+                :button-type="BUTTON_TYPE.SECONDARY" 
+                :button-size="BUTTON_SIZE.SHORT"
+                v-on:click="confirmLogout">Logout</ButtonMain>
+        </div>
+        <div class="header_menu_container">
+            <ButtonMain 
+                :button-type="BUTTON_TYPE.TERTIARY" 
+                :button-size="BUTTON_SIZE.SHORT"
+                v-on:click="goToPage('/')">ホーム</ButtonMain>
+            <ButtonMain 
+                :button-type="BUTTON_TYPE.TERTIARY" 
+                :button-size="BUTTON_SIZE.SHORT"
+                v-on:click="goToPage('/list')">リスト</ButtonMain>
+            <ButtonMain 
+                :button-type="BUTTON_TYPE.TERTIARY" 
+                :button-size="BUTTON_SIZE.SHORT"
+                v-on:click="goToPage('/calendar')">カレンダー</ButtonMain>
+            <ButtonMain 
+                :button-type="BUTTON_TYPE.TERTIARY" 
+                :button-size="BUTTON_SIZE.SHORT"
+                v-on:click="goToPage('/category')">カテゴリー編集</ButtonMain>
+            <ButtonMain 
+                :button-type="BUTTON_TYPE.TERTIARY" 
+                :button-size="BUTTON_SIZE.SHORT"
+                v-on:click="goToPage('/log')">ログ</ButtonMain>
+            <LoadingAnimationComponent02 v-if="isLoading"/>
+            <ToastComponent ref="toast"/>
+        </div>        
     </div>
-    <div class="header_menu_container">
-        <ButtonMain 
-            :button-type="BUTTON_TYPE.TERTIARY" 
-            :button-size="BUTTON_SIZE.SHORT"
-            v-on:click="goToPage('/')">ホーム</ButtonMain>
-        <ButtonMain 
-            :button-type="BUTTON_TYPE.TERTIARY" 
-            :button-size="BUTTON_SIZE.SHORT"
-            v-on:click="goToPage('/list')">リスト</ButtonMain>
-        <ButtonMain 
-            :button-type="BUTTON_TYPE.TERTIARY" 
-            :button-size="BUTTON_SIZE.SHORT"
-            v-on:click="goToPage('/calendar')">カレンダー</ButtonMain>
-        <ButtonMain 
-            :button-type="BUTTON_TYPE.TERTIARY" 
-            :button-size="BUTTON_SIZE.SHORT"
-            v-on:click="goToPage('/category')">カテゴリー編集</ButtonMain>
-        <ButtonMain 
-            :button-type="BUTTON_TYPE.TERTIARY" 
-            :button-size="BUTTON_SIZE.SHORT"
-            v-on:click="goToPage('/log')">ログ</ButtonMain>
-        <ButtonMain 
-            :button-type="BUTTON_TYPE.TERTIARY" 
-            :button-size="BUTTON_SIZE.SHORT"
-            v-on:click="goToPage('/food')">test</ButtonMain>
-        <LoadingAnimationComponent02 v-if="isLoading"/>
-        <ToastComponent ref="toast"/>
-    </div>
+
 </template>
 
 <style scoped>
@@ -143,7 +147,8 @@ onMounted(() => {
     display: flex;
     align-items: center;
     padding: 4px 10px 4px 10px;
-    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.primary));
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onPrimaryHeavy));
+    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.primaryHeavy));
 }
 .login_name{
     margin: 0 10px 0 10px;
@@ -151,5 +156,7 @@ onMounted(() => {
 }
 .header_menu_container{
     display: flex;
+    width: 100%;
+    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.background));
 }
 </style>

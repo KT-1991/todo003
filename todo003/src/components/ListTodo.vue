@@ -7,10 +7,13 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { computed, onMounted, ref, toDisplayString } from 'vue';
 import ButtonMain from "./ButtonMain.vue";
 import { BUTTON_SIZE, BUTTON_TYPE, CATEGORY_COLOR_INFO, COLOR_TYPE } from "@/scripts/const.js";
+import CardTask from "./CardTask.vue";
+import { useSizeStore } from "@/stores/size.js";
 
 const auth = Firebase.auth
 const todoStore = useTodoStore();
 const colorStore = useColorStore();
+const sizeStore = useSizeStore();
 
 const addTestData: any = async () => {
     todoStore.listCategory.forEach(elem => {
@@ -64,71 +67,66 @@ const colorStyle = {
 </script>
 
 <template>
-    <div class="base">
-        <table class="list_table"> 
-            <col v-for="value in todoStore.listCategory">
+    <div class="base_list">
+        <table class="list_table">
             <thead>
                 <tr>
                     <th v-for="category in todoStore.sortedListCategory"
-                    :style="{background: CATEGORY_COLOR_INFO[category.colorId]?.heavyColor,
-                                        color: CATEGORY_COLOR_INFO[category.colorId]?.textColor}"
-                    >
+                        :style="{backgroundColor: CATEGORY_COLOR_INFO[category.colorId]?.heavyColor}">
                         <div>{{ category.name }}</div>
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(item, i) in todoStore.listTodo">
-                    <td
-                        v-for="category in todoStore.sortedListCategory"
-                        :style="{color: CATEGORY_COLOR_INFO[category.colorId]?.textColor,
-                                background: CATEGORY_COLOR_INFO[category.colorId]?.color
-                            }"
-                        :class="{border_bottom: isLastTodo(category.id, i)}"  
-                        >
-                        <div class="list_table_item" 
-                           >
-                            <div :class="{list_item_date_invisible: !isFirstTodo(category.id, i)}">{{ formatDate(todoStore.dataTodo[category.id]![i]?.doAt) }}</div>
-                            <div class="list_item_content">{{ todoStore.dataTodo[category.id]![i]?.title }}</div>
-                            <ButtonMain
-                                :button-type="BUTTON_TYPE.SECONDARY" 
-                                :button-size="BUTTON_SIZE.THIN"
-                                v-on:click="todoStore.completeTodo(todoStore.dataTodo[category.id]![i]!.id)"
-                                v-if="todoStore.dataTodo[category.id]![i]!=null">✔︎</ButtonMain>                               
+                <tr>
+                    <td v-for="category in todoStore.sortedListCategory">
+                        <div v-for="i in todoStore.dataTodo[category.id]?.length"
+                            class="list_table_body">
+                            <div v-if="todoStore.dataTodo[category.id]![i-1] != null && isFirstTodo(category.id, i-1)">{{ formatDate(todoStore.dataTodo[category.id]![i-1]!.doAt) }}</div>
+                            <CardTask 
+                                :task="todoStore.dataTodo[category.id]![i-1]!"
+                                :category-color-id="category.colorId"/> 
                         </div>
-                     
                     </td>
                 </tr>
             </tbody>
-        </table>        
+        </table>
     </div>
 </template>
 
 <style scoped>
-.list_table {
+.base_list{
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;   
+    display: flex;
+    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.background));
+    overflow: scroll;
+    width: fit-content;
+    height: calc(100vh - v-bind('sizeStore.heightInput') * 1px - v-bind('sizeStore.heightHeader') * 1px);
+    margin: 10px;
+}
+.list_table{
     border-collapse: collapse;
+    border-spacing: 0;
+    height: 100%;
+    table-layout: fixed;
+
     th{
-        border: 1px solid v-bind(colorStyle.border);
+        min-width: 200px;
+        text-align: left;
+        font-size: large;
+        padding-left: 20px;
+        border-left: 1px solid v-bind(colorStyle.border);
+    
+        position: sticky;
+        top: 0;
+        left: 0;
+        z-index: 100;
     }   
     td{
+        vertical-align: top;
+        padding: 15px;
         border-left: 1px solid v-bind(colorStyle.border);
-        border-right: 1px solid v-bind(colorStyle.border);
     }
-}
-.list_table_item_group {
-    border: 1px solid v-bind(colorStyle.border);
-}
-.list_table_item {
-    display: flex;
-}
-.list_item_date_invisible{
-    color: transparent;
-}
-.list_item_content{
-    margin: 0 10px;
-    width: 100%;
-}
-.border_bottom{
-    border-bottom: 1px solid v-bind(colorStyle.border);
 }
 </style>

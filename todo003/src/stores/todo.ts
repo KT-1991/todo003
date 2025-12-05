@@ -4,29 +4,27 @@ import { defineStore } from "pinia";
 import Firebase from "../firebase_settings/index.js"
 import { CATEGORY_COLOR_INFO } from "@/scripts/const.js";
 
+export interface Task {
+  id: string, 
+  createdAt: Date,         
+  deletedAt: Date | null,
+  doAt: Date,            
+  completedAt: Date | null,          
+  title: string,   
+  detail: string,
+  categoryId: string
+}
+
 // カウンターストアを定義
 export const useTodoStore = defineStore("todo", {
   // ストアの状態（state）
   state: () => ({
-    listTodo: [] as Array<{id: string, 
-                            createdAt: Date, 
-                            doAt: Date, 
-                            completedAt: Date | null, 
-                            title: string, 
-                            detail: string,
-                            categoryId: string}>,
+    listTodo: [] as Array<Task>,
     listCategory: [] as Array<{id: string,
                                 name: string,
                                 colorId: string,
                                 priority: number}>,
-    dataTodo: {} as {[categoryId: string]: Array<{
-                            id: string, 
-                            createdAt: Date, 
-                            doAt: Date, 
-                            completedAt: Date | null, 
-                            title: string, 
-                            detail: string,
-                            categoryId: string}>},
+    dataTodo: {} as {[categoryId: string]: Array<Task>},
     isSortedAscByDate: true as boolean,
     isSortedAscByTitle: true as boolean,     
     db: Firebase.db,
@@ -37,10 +35,10 @@ export const useTodoStore = defineStore("todo", {
     suggestions: [] as Array<string>,
   }),
   getters: {
-    getTodoData(): {[categoryId: string]: Array<any>} {
-      const data: {[categoryId: string]: Array<{}>} = {};
+    getTodoData(): {[categoryId: string]: Array<Task>} {
+      const data: {[categoryId: string]: Array<Task>} = {};
       this.listCategory.forEach(category => {
-          const list: any = [];
+          const list: Array<Task> = [];
           this.listTodo.forEach(item => {
               if(category.id == item.categoryId){
                   list.push(item);
@@ -49,6 +47,22 @@ export const useTodoStore = defineStore("todo", {
           data[category.id] = list;
       })
       return data;
+    },
+    getMaxLengthByCategory(): number {
+      let max = 0;
+      this.listCategory.forEach(category => {
+        if(this.dataTodo[category.id] != null){
+          if(this.dataTodo[category.id]!.length > max){
+            max = this.dataTodo[category.id]!.length;
+          }
+        }
+      })
+      return max;
+    },
+    getLengthByCategory() {
+      return (categoryId: string) => {
+        this.dataTodo[categoryId]?.length;
+      }
     },
     getDateSpan():Array<Date>{
       let min: Date = new Date();
@@ -61,8 +75,8 @@ export const useTodoStore = defineStore("todo", {
           min = new Date(todo.doAt.getTime());
         }
       })
-      max.setDate(max.getDate() + 3);
-      min.setDate(min.getDate() - 3);
+      //max.setDate(max.getDate() + 3);
+      //min.setDate(min.getDate() - 3);
 
 
       const diffTime = max.getTime() - min.getTime();
@@ -131,6 +145,7 @@ export const useTodoStore = defineStore("todo", {
         querySnapshot.docs.forEach((doc) => {
           this.listTodo.push({id: doc.id as string,
                               createdAt: doc.data().createdAt.toDate() as Date, 
+                              deletedAt: doc.data().deletedAt?.toDate() as Date, 
                               doAt: doc.data().doAt.toDate() as Date,
                               completedAt: doc.data().completedAt,
                               title: doc.data().title,
@@ -171,6 +186,7 @@ export const useTodoStore = defineStore("todo", {
           console.log(doc.data().doAt.toDate());
           this.listTodo.push({id: doc.id as string,
                               createdAt: doc.data().createdAt.toDate() as Date, 
+                              deletedAt: doc.data().deletedAt?.toDate() as Date,
                               doAt: doc.data().doAt.toDate() as Date,
                               completedAt: doc.data().completedAt,
                               title: doc.data().title,
@@ -205,6 +221,7 @@ export const useTodoStore = defineStore("todo", {
           detail: detail,
           doAt: doAt,
           createdAt: today,
+          deletedAt: null,
           completedAt: null,
         });
           this.dataTodo = this.getTodoData;
@@ -216,11 +233,22 @@ export const useTodoStore = defineStore("todo", {
       }
     },
     async completeTodo(id: string){
+
+      for(let i=0; i < this.listTodo.length; i++){
+        if(this.listTodo[i]?.id == id){
+          if(this.listTodo[i]!.completedAt == null){
+            this.listTodo[i]!.completedAt = new Date();
+          }else{
+            this.listTodo[i]!.completedAt = null;
+          }
+        }
+      }
+
       const docRef = doc(this.$state.db, "userData", this.$state.userId, "todo", id);
       try {
-        await updateDoc(docRef, {
-          completedAt: serverTimestamp(),
-        });
+        //await updateDoc(docRef, {
+        //  completedAt: serverTimestamp(),
+        //});
       }catch(error){
         console.log(error)
         alert("エラーが発生しました")
