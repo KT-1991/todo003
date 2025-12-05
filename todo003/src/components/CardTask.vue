@@ -19,8 +19,9 @@ const emit = defineEmits(['click']);
 const isDeleted = ref(false);
 const isVisibleDetail = ref(false);
 
-const deleteTask = () => {
+const deleteTask = (id: string) => {
     isDeleted.value = !isDeleted.value
+    todoStore.deleteTodo(id);
 }
 const showDetail = () => {
     isVisibleDetail.value = !isVisibleDetail.value
@@ -41,7 +42,7 @@ const showDetail = () => {
                     </div>
                     <div class="card_task_content">{{ task.title }}</div>   
                     <div class="card_task_button_container">
-                        <div class="card_task_button" v-on:click.stop="deleteTask">
+                        <div class="card_task_button" v-on:click.stop="deleteTask(task.id)">
                             <div>×</div>
                         </div>    
                     </div>
@@ -62,14 +63,17 @@ const showDetail = () => {
     position: relative;
     width: 100%;
     height: 100%;
+    color: v-bind(CATEGORY_COLOR_INFO[categoryColorId]?.textColor);
     background-color: v-bind(CATEGORY_COLOR_INFO[categoryColorId]?.color);
     box-shadow: 3px 3px gray;
     transition: background-color 0.5s;
 } 
 .base_card_task_active:hover{
+    color: v-bind(CATEGORY_COLOR_INFO[categoryColorId]?.textColor);
     background-color: v-bind(CATEGORY_COLOR_INFO[categoryColorId]?.heavyColor);
 }
 .base_card_task_complete {
+    color: v-bind(CATEGORY_COLOR_INFO[categoryColorId]?.textColor);
     background-color: v-bind(CATEGORY_COLOR_INFO[categoryColorId]?.heavyColor);
     transition: background-color 0.5s;
 }
@@ -109,8 +113,9 @@ const showDetail = () => {
 .card_task_checkbox{
     height: 20px;
     width: 20px;
-    border: 1px solid rgb(99, 99, 99);
+    border: 2px solid rgb(99, 99, 99);
     position: relative;
+    margin-right: 5px;
 }
 .card_task_checkbox_background_active{
     height: 100%;
@@ -146,19 +151,28 @@ const showDetail = () => {
     transition: width 0.3s ease-out, height 0.3s ease-out, top 0.3s ease-out, left 0.3s ease-out, border-width 0s;
     transition-delay: 0s;
     overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: large;
+    font-family: "YDWbananaslipplus";
 }
 .base_card_task_complete .card_task_button{
     top: 0;
     left: 0;
     height: 20px;
     width: 20px;
-    border: 1px solid rgb(99, 99, 99);
-    background-color: lightsalmon;
+    border: 2x solid rgb(99, 99, 99);
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onSecondary));
+    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.secondary));
     transition-delay: 0.6s;
+    
+
+}
+.card_task_button:hover{
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onSecondaryHeavy));
+    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.secondaryHeavy));
 }
 .base_card_task_deleted .base_card_task_active{
     height: 0;
@@ -199,6 +213,7 @@ const showDetail = () => {
 .card_task_detail{
     margin-left: 10px;
     padding: 3px;
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onBackground));
     background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.background));
 }
 </style>

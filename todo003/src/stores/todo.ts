@@ -139,7 +139,7 @@ export const useTodoStore = defineStore("todo", {
       this.listTodo.splice(0);
       try {
         const collectionRef = collection(this.$state.db, `userData/${this.$state.userId}/todo`);
-        const que = query(collectionRef, where("completedAt", "==", null));
+        const que = query(collectionRef, where("deletedAt", "==", null));
         const querySnapshot = await getDocs(que);
         
         querySnapshot.docs.forEach((doc) => {
@@ -163,7 +163,7 @@ export const useTodoStore = defineStore("todo", {
       this.listTodoForSuggestions.splice(0);
       try {
         const collectionRef = collection(this.$state.db, `userData/${this.$state.userId}/todo`);
-        const que = query(collectionRef, where("completedAt", "==", null), limit(limitNo));
+        const que = query(collectionRef, limit(limitNo));
         const querySnapshot = await getDocs(que);
         
         querySnapshot.docs.forEach((doc) => {
@@ -211,6 +211,7 @@ export const useTodoStore = defineStore("todo", {
           detail: detail,
           doAt: Timestamp.fromDate(doAt),
           createdAt: Timestamp.fromDate(today),
+          deletedAt: null,
           completedAt: null,
         });
         console.log(newDocRef.id);
@@ -246,13 +247,33 @@ export const useTodoStore = defineStore("todo", {
 
       const docRef = doc(this.$state.db, "userData", this.$state.userId, "todo", id);
       try {
-        //await updateDoc(docRef, {
-        //  completedAt: serverTimestamp(),
-        //});
+        await updateDoc(docRef, {
+          completedAt: serverTimestamp(),
+        });
       }catch(error){
         console.log(error)
         alert("エラーが発生しました")
       }
+    },
+    async deleteTodo(id: string){
+
+      for(let i=0; i < this.listTodo.length; i++){
+        
+        if(this.listTodo[i]?.id == id){
+          this.listTodo.splice(i, 1);
+          const docRef = doc(this.$state.db, "userData", this.$state.userId, "todo", id);
+          try {
+            await updateDoc(docRef, {
+              deletedAt: serverTimestamp(),
+            });
+          }catch(error){
+            console.log(error)
+            alert("エラーが発生しました")
+          }          
+        }
+      }
+
+
     },
     async cancelTodo(id: string){
       const docRef = doc(this.$state.db, "userData", this.$state.userId, "todo", id);

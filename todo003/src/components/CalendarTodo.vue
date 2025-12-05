@@ -26,10 +26,45 @@ const addTestData: any = async () => {
     })
 }
 const formatDate = (date: Date) => {
-    const text: string = (date.getMonth() + 1) + "/" + date.getDate();
+
+    let workingDay = "";
+    switch(date.getDay()){
+        case 0: 
+            workingDay = "日";
+            break;
+        case 1:
+            workingDay = "月";
+            break;
+        case 2:
+            workingDay = "火";
+            break;
+        case 3:
+            workingDay = "水";
+            break;
+        case 4:
+            workingDay = "木";
+            break;
+        case 5:
+            workingDay = "金";
+            break;
+        case 6:
+            workingDay = "土";
+            break;
+    }    
+
+    const text: string = (date.getMonth() + 1) + "/" + date.getDate() + "(" + workingDay + ")";
     return text;
 }
 
+const isToday = (target: Date): boolean => {
+    return target.toDateString() == (new Date()).toDateString();
+}
+const isSunday = (target: Date): boolean => {
+    return target.getDay() == 0;
+}
+const isSaturday = (target: Date): boolean => {
+    return target.getDay() == 6;
+}
 
 const colorStyle = {
     border: colorStore.getColorBy(COLOR_TYPE.onBackground),
@@ -60,12 +95,15 @@ onMounted(() => {
             </thead>
             <tbody>
                 <tr v-for="date in todoStore.getDateSpan">
-                    <td>{{ formatDate(date) }}</td>
+                    <td :class="{calendar_today: isToday(date),
+                                    calendar_saturday: isSaturday(date),
+                                    calendar_sunday: isSunday(date),
+                                }">{{ formatDate(date) }}</td>
                     <td v-for="category in todoStore.sortedListCategory"
-                        :style="{color: CATEGORY_COLOR_INFO[category.colorId]?.textColor,
-                                    background: colorStore.getColorBy(COLOR_TYPE.background)
-                                }"
-                    >
+                        :class="{calendar_today: isToday(date),
+                                    calendar_saturday: isSaturday(date),
+                                    calendar_sunday: isSunday(date),
+                                    }">
                         <div v-for="item in todoStore.getTodoListAt(date, category.id) " class="calendar_item_container">
                             <CardTask 
                                     :task="item" 
@@ -85,9 +123,10 @@ onMounted(() => {
     display: flex;
     background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.background));
     overflow: scroll;
-    width: fit-content;
+    max-width: fit-content;
     height: calc(100vh - v-bind('sizeStore.heightInput') * 1px - v-bind('sizeStore.heightHeader') * 1px);
     margin: 10px;
+    border: 1px solid v-bind(colorStyle.border);
 }
 .calendar_table{
     border-collapse: collapse;
@@ -96,7 +135,7 @@ onMounted(() => {
     table-layout: fixed;
     th{
         border: 1px solid v-bind(colorStyle.border);
-        font-size: large;
+        font-size: medium;
 
         position: sticky;
         top: 0;
@@ -117,5 +156,17 @@ onMounted(() => {
 }
 .calendar_item_container{
     display: flex;
+}
+.calendar_today{
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onPrimary)); 
+    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.primary));  
+}
+.calendar_saturday{ 
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onSecondary)); 
+    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.secondary)); 
+}
+.calendar_sunday{
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onSecondaryHeavy)); 
+    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.secondaryHeavy)); 
 }
 </style>

@@ -24,6 +24,12 @@ export const BUTTON_SIZE = {
     THIN: "thin",
 }
 
+export const FONT_TYPE = {
+    UI_LARGE: "Oswald-VariableFont_wght",
+    UI_SMALL: "YDWbananaslipplus",
+    MAIN_SENTENSE: "NotoSansJP-Regular",
+}
+
 export const SQL_TEXT = {
     TABLE_INFO_CATEGORY: "PRAGMA table_info(ms_category);",
     SELECT_CATEGORY: `
@@ -102,9 +108,9 @@ export const COLOR_INFO: {[id: string]: {id: string,
                     onPrimaryHeavy: "#FFFFFF",
                     onSecondary: "#000000",
                     onSecondaryHeavy: "#FFFFFF",
-                    onBackground: "#000000",
+                    onBackground: "rgba(49, 34, 34, 1)",
                     onError: "#FFFFFF",
-                    gray: "#dbdccfff"
+                    gray: "#dcd9cfff"
                 }   
             }, 
     "light": {id: "light",

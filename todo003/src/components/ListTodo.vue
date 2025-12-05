@@ -104,6 +104,7 @@ const colorStyle = {
     width: fit-content;
     height: calc(100vh - v-bind('sizeStore.heightInput') * 1px - v-bind('sizeStore.heightHeader') * 1px);
     margin: 10px;
+    border: 2px solid v-bind(colorStyle.border);
 }
 .list_table{
     border-collapse: collapse;
@@ -114,7 +115,7 @@ const colorStyle = {
     th{
         min-width: 200px;
         text-align: left;
-        font-size: large;
+        font-size: medium;
         padding-left: 20px;
         border-left: 1px solid v-bind(colorStyle.border);
     

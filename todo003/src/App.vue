@@ -2,7 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
 import { useColorStore } from './stores/color';
-import { COLOR_TYPE } from './scripts/const';
+import { COLOR_TYPE, FONT_TYPE } from './scripts/const';
 
 const colorStore = useColorStore();
 
@@ -10,15 +10,50 @@ const colorStore = useColorStore();
 </script>
 
 <template>
-  <div class="test_class">
+  <div class="base_main">
     <RouterView/>
   </div>
 </template>
 
 <style>
 
-.test_class{
+.base_main{
+  font-family: v-bind(FONT_TYPE.MAIN_SENTENSE);
   background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.gray));
 }
+
+@font-face {
+  font-family: 'IBMPlexSansJP-Bold';
+  src: url('@/assets/fonts/IBMPlexSansJP-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'IBMPlexSansJP-Medium';
+  src: url('@/assets/fonts/IBMPlexSansJP-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'YDWbananaslipplus';
+  src: url('@/assets/fonts/YDWbananaslipplus.otf') format('opentype');
+}
+@font-face {
+  font-family: 'MPLUS1p-Regular';
+  src: url('@/assets/fonts/MPLUS1p-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'NotoSansJP-Regular';
+  src: url('@/assets/fonts/NotoSansJP-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'SawarabiGothic-Regular';
+  src: url('@/assets/fonts/SawarabiGothic-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Anton-Regular';
+  src: url('@/assets/fonts/Anton-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Oswald-VariableFont_wght';
+  src: url('@/assets/fonts/Oswald-VariableFont_wght.ttf') format('truetype');
+}
+
 
 </style>

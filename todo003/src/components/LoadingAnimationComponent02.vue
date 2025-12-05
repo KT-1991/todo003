@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { Transition } from 'vue';
+import { COLOR_TYPE } from '@/scripts/const';
+import { useColorStore } from '@/stores/color';
 
+const colorStore = useColorStore();
 
 </script>
 
@@ -17,12 +20,14 @@ import { Transition } from 'vue';
     position: absolute;
     height: 100vh;
     width: 100vw;
+    z-index: 150;
 }
 .loader_position {
     position: absolute;
     top: 50%;
     left: 50%;
     margin: -25px 0 0 -25px;
+    z-index: 150;
 }
 .loader {
   width: 50px;
@@ -30,7 +35,7 @@ import { Transition } from 'vue';
   aspect-ratio: 1;
   border-radius: 50%;
   padding: 1px;
-  background: conic-gradient(#0000 10%,#f03355) content-box;
+  background: conic-gradient(#0000 10%,v-bind(colorStore.getColorBy(COLOR_TYPE.secondary))) content-box;
   -webkit-mask:
     repeating-conic-gradient(#0000 0deg,#000 1deg 20deg,#0000 21deg 36deg),
     radial-gradient(farthest-side,#0000 calc(100% - var(--b) - 1px),#000 calc(100% - var(--b)));

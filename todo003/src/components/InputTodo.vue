@@ -5,7 +5,7 @@ import { useTodoStore } from '@/stores/todo';
 import { onAuthStateChanged } from 'firebase/auth';
 import { nextTick, onMounted, ref, type Ref } from 'vue';
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { BUTTON_TYPE, BUTTON_SIZE, COLOR_TYPE, DIALOG_TYPE } from "@/scripts/const.js";
+import { BUTTON_TYPE, BUTTON_SIZE, COLOR_TYPE, DIALOG_TYPE, FONT_TYPE } from "@/scripts/const.js";
 import ButtonMain from "./ButtonMain.vue";
 import { useColorStore } from "@/stores/color.js";
 import ConfirmDialog from "./ConfirmDialog.vue";
@@ -85,11 +85,11 @@ onMounted(() => {
                 </option>
             </select>
             <input type="text" 
-                    placeholder="title" 
+                    placeholder="タスク" 
                     v-model="title" 
                     v-on:keyup="makeSuggestions" 
-                    class="textArea input_item">
-            <textarea class="text_area input_item" v-model="detail" placeholder="detail" ></textarea>       
+                    class="text_area input_item">
+            <textarea class="text_area input_item" v-model="detail" placeholder="詳細" ></textarea>       
         </div> 
             <div v-show="todoStore.suggestions.length != 0">履歴</div>
             <div class="suggestion_container">
@@ -134,6 +134,7 @@ onMounted(() => {
 .input_container{
     padding: 10px;
     display: flex;
+    flex-wrap: wrap;
     vertical-align: top;
     color: v-bind(colorStore.getColorBy(COLOR_TYPE.onBackground));
     background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.background));
@@ -151,12 +152,13 @@ onMounted(() => {
 }
 .input_item {
     margin-left: 5px;
-    padding: 5px;
+    padding-left: 5px;
     max-width: 200px;
     background: white;
     border: 2px solid black;
     outline:0;
     font-size: medium;
+    font-family: v-bind(FONT_TYPE.UI_SMALL);;
 }
 .input_item:focus{
     border: 3px solid v-bind(colorStore.getColorBy(COLOR_TYPE.primary)); 
@@ -164,7 +166,11 @@ onMounted(() => {
 .text_area{
     field-sizing: content;
     min-height: min-content;
-    min-width: 100px;
+    min-width: 200px;
     vertical-align: top;
+    font-family: v-bind(FONT_TYPE.MAIN_SENTENSE);
+}
+.text_area::placeholder{
+   font-family: v-bind(FONT_TYPE.UI_SMALL); 
 }
 </style>

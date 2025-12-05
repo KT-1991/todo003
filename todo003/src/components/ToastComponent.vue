@@ -62,6 +62,7 @@ async function sendToast(inputTitle: string) {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    z-index: 150;
 }
 .toast{
     width: 100vw;

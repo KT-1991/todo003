@@ -7,7 +7,7 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { nextTick, onBeforeUpdate, onMounted, onUpdated, ref, type Ref } from 'vue';
 import { useRoute } from "vue-router";
 import ButtonMain from "./ButtonMain.vue";
-import { BUTTON_SIZE, BUTTON_TYPE, COLOR_TYPE } from "@/scripts/const.js";
+import { BUTTON_SIZE, BUTTON_TYPE, COLOR_TYPE, FONT_TYPE } from "@/scripts/const.js";
 import { useColorStore } from "@/stores/color.js";
 import LoadingAnimationComponent02 from "./LoadingAnimationComponent02.vue";
 import ToastComponent from "./ToastComponent.vue";
@@ -107,7 +107,7 @@ onMounted(() => {
 <template>
     <div ref="elemHeaderContainer">
         <div class="header_title_container" >
-            <div>todo app</div>
+            <div class="app_title">Task Calendar</div>
             <div class="login_name">{{ loginName }}</div>
             <ButtonMain 
                 :button-type="BUTTON_TYPE.SECONDARY" 
@@ -158,5 +158,9 @@ onMounted(() => {
     display: flex;
     width: 100%;
     background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.background));
+}
+.app_title{
+    font-family: v-bind(FONT_TYPE.UI_LARGE);
+    font-size: medium;
 }
 </style>
