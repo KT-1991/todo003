@@ -4,7 +4,6 @@ import LogTodo from '@/components/LogTodo.vue';
 </script>
 
 <template>
-    <HeaderComponent/>
     <LogTodo/>
 </template>
 

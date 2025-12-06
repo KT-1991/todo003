@@ -22,6 +22,8 @@ const getClassButtonType = () => {
             return "button_base_type_secondary";
         case BUTTON_TYPE.TERTIARY:
             return "button_base_type_tertiary";
+        case BUTTON_TYPE.QUATERNARY:
+            return "button_base_type_quaternary";
     }
 }
 const getClassButtonSize = (name: string) => {
@@ -62,7 +64,7 @@ const getClassButtonSize = (name: string) => {
     display: flex;
     justify-content: center;
     cursor: pointer;
-    font-family: v-bind(FONT_TYPE.UI_SMALL);;
+    font-family: v-bind(FONT_TYPE.UI_SMALL);
 }
 .button_base_size_long {
     width: 100%;
@@ -94,6 +96,15 @@ const getClassButtonSize = (name: string) => {
     color: v-bind(colorStore.getColorBy(COLOR_TYPE.onBackground));
     background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.background));
     :hover{
+        color: v-bind(colorStore.getColorBy(COLOR_TYPE.onSecondary));
+        background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.secondary));
+    }
+}
+.button_base_type_quaternary {
+    background-color: transparent;
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onBackground));
+    :hover{
+        opacity: 0.5;
         color: v-bind(colorStore.getColorBy(COLOR_TYPE.onSecondary));
         background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.secondary));
     }

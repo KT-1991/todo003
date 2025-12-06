@@ -6,7 +6,6 @@ import CalendarTodo from '@/components/CalendarTodo.vue';
 
 <template>
     <div class="base_calendar_view">
-        <HeaderComponent/>
         <InputTodo/>
         <CalendarTodo/>        
     </div>

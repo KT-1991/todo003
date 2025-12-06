@@ -125,7 +125,7 @@ onMounted(() => {
     overflow: scroll;
     max-width: fit-content;
     height: calc(100vh - v-bind('sizeStore.heightInput') * 1px - v-bind('sizeStore.heightHeader') * 1px);
-    margin: 10px;
+    margin: auto;
     border: 1px solid v-bind(colorStyle.border);
 }
 .calendar_table{

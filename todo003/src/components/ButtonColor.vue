@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BUTTON_SIZE, BUTTON_TYPE, COLOR_TYPE } from '@/scripts/const';
+import { BUTTON_SIZE, BUTTON_TYPE, COLOR_TYPE, FONT_TYPE } from '@/scripts/const';
 import { useColorStore } from '@/stores/color';
 
 const colorStore = useColorStore();
@@ -65,10 +65,7 @@ const getClassButtonSize = (name: string) => {
     display: flex;
     justify-content: center;
     cursor: pointer;
-    border-radius: 5px;
-    :hover{
-        border-radius: 3px;
-    }
+    font-family: v-bind(FONT_TYPE.UI_SMALL);
 }
 .button_base_size_long {
     width: 100%;

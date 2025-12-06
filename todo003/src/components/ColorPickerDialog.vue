@@ -72,21 +72,30 @@ onUnmounted(() => {
 
 <template>
   <dialog ref="dialog" class="modal_dialog">
-    <div v-if="open">
+    <div v-if="open" class="modal_container">
         <div class="modal_title">色の選択</div>
-        <div class="modal_color_list" v-for="item in CATEGORY_COLOR_INFO">
+        <div class="modal_color_list" >
             <ButtonColor 
+                v-for="item in CATEGORY_COLOR_INFO"
                 :button-type="BUTTON_TYPE.PRIMARY" 
-                :button-size="BUTTON_SIZE.SHORT"
+                :button-size="BUTTON_SIZE.LONG"
                 :color="item.color"
                 :heavy-color="item.heavyColor"
                 :text-color="item.textColor"
                 v-on:click="changeColor(item.id)"
-                :class="{selected: item.id == selectedColorId}">color</ButtonColor>
+                :class="{selected: item.id == selectedColorId}">色</ButtonColor>
         </div>
       <div class="modal_action">
-        <ButtonMain :button-type="BUTTON_TYPE.PRIMARY" class="modal_button" v-on:click="onDialogAction('ok')">OK</ButtonMain> 
-        <ButtonMain :button-type="BUTTON_TYPE.SECONDARY" class="modal_button" v-on:click="onDialogAction('cancel')">Cancel</ButtonMain>
+        <ButtonMain 
+          :button-type="BUTTON_TYPE.PRIMARY" 
+          :button-size="BUTTON_SIZE.LONG"
+          class="modal_button" 
+          v-on:click="onDialogAction('ok')">OK</ButtonMain> 
+        <ButtonMain 
+          :button-type="BUTTON_TYPE.SECONDARY" 
+          :button-size="BUTTON_SIZE.LONG"
+          class="modal_button" 
+          v-on:click="onDialogAction('cancel')">Cancel</ButtonMain>
       </div>
     </div>
   </dialog>
@@ -94,25 +103,33 @@ onUnmounted(() => {
 
 <style scoped>
 
-.modal_dialog {
+.modal_dialog[open] {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 0;
+  width: 300px;
+  border: 2px solid black;
+  outline: 0;
+  box-shadow: 3px 3px black;
+}
+.modal_container{
+  position: relative;
+  flex-direction: column;
 }
 .modal_title{
-    padding: 0 0 0 10px;
+    padding-left: 10px;
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onSecondaryHeavy));
     background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.secondaryHeavy));
-}
-.modal_content{
-    padding: 10px;
-    white-space: pre-wrap;
-    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.secondary));
 }
 
 .modal_color_list {
-  overflow-y: scroll;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin: 20px;
+  border: 1px solid gray;
+  height: fit-content;
 }
 
 .modal_action {
@@ -130,6 +147,6 @@ onUnmounted(() => {
     justify-content: center;
 }
 .selected {
-  border: 5px solid red;
+  border: 2px solid red;
 }
 </style>

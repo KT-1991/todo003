@@ -68,13 +68,7 @@ onMounted(() => {
 
 <template>
     <div ref="elemInputContainer" class="input_base">
-        <div class="input_container">
-            <ButtonMain 
-                :button-type="BUTTON_TYPE.PRIMARY" 
-                :button-size="BUTTON_SIZE.SHORT"
-                v-on:click="register()">
-                <span class="add_button_text">追加</span>
-            </ButtonMain>       
+        <div class="input_container">    
             <input class="input_do_at input_item" type="date" placeholder="date" value="0" v-model="doAt">
             <select v-model="selectedCategory" class="input_item">
                 <option disabled value="" >カテゴリー</option>
@@ -89,7 +83,13 @@ onMounted(() => {
                     v-model="title" 
                     v-on:keyup="makeSuggestions" 
                     class="text_area input_item">
-            <textarea class="text_area input_item" v-model="detail" placeholder="詳細" ></textarea>       
+            <textarea class="text_area input_item" v-model="detail" placeholder="詳細" ></textarea>  
+            <ButtonMain 
+                :button-type="BUTTON_TYPE.PRIMARY" 
+                :button-size="BUTTON_SIZE.SHORT"
+                v-on:click="register()">
+                <span class="add_button_text">追加</span>
+            </ButtonMain>        
         </div> 
             <div v-show="todoStore.suggestions.length != 0">履歴</div>
             <div class="suggestion_container">
@@ -113,8 +113,8 @@ onMounted(() => {
 
 <style scoped>
 .input_base{
-    margin: 10px;
-    border: 2px solid black;
+    margin: auto;
+    padding: 10px;
     width: fit-content;
 }
 .input_title{
@@ -132,6 +132,7 @@ onMounted(() => {
 }
 
 .input_container{
+    border: 2px solid black;
     padding: 10px;
     display: flex;
     flex-wrap: wrap;
@@ -151,7 +152,7 @@ onMounted(() => {
     display: flex;
 }
 .input_item {
-    margin-left: 5px;
+    margin: 2px 5px 2px 5px;
     padding-left: 5px;
     max-width: 200px;
     background: white;

@@ -28,9 +28,46 @@ const formatDate = (date: Date | undefined): string => {
     if(date == null){
         return "";
     }
-    const text: string = (date.getMonth() + 1) + "/" + date.getDate();
+
+    let workingDay = "";
+    switch(date.getDay()){
+        case 0: 
+            workingDay = "日";
+            break;
+        case 1:
+            workingDay = "月";
+            break;
+        case 2:
+            workingDay = "火";
+            break;
+        case 3:
+            workingDay = "水";
+            break;
+        case 4:
+            workingDay = "木";
+            break;
+        case 5:
+            workingDay = "金";
+            break;
+        case 6:
+            workingDay = "土";
+            break;
+    }    
+
+    const text: string = (date.getMonth() + 1) + "/" + date.getDate() + "(" + workingDay + ")";
     return text;
 }
+const isToday = (target: Date): boolean => {
+    return target.toDateString() == (new Date()).toDateString();
+}
+const isSunday = (target: Date): boolean => {
+    return target.getDay() == 0;
+}
+const isSaturday = (target: Date): boolean => {
+    return target.getDay() == 6;
+}
+
+
 const isFirstTodo = (categoryId: string, index: number) => {
     const current = todoStore.dataTodo[categoryId]![index]?.doAt;
     const prev = todoStore.dataTodo[categoryId]![index - 1]?.doAt;
@@ -82,7 +119,12 @@ const colorStyle = {
                     <td v-for="category in todoStore.sortedListCategory">
                         <div v-for="i in todoStore.dataTodo[category.id]?.length"
                             class="list_table_body">
-                            <div v-if="todoStore.dataTodo[category.id]![i-1] != null && isFirstTodo(category.id, i-1)">{{ formatDate(todoStore.dataTodo[category.id]![i-1]!.doAt) }}</div>
+                            <div v-if="todoStore.dataTodo[category.id]![i-1] != null && isFirstTodo(category.id, i-1)"
+                                class="list_date"
+                                :class="{list_today: isToday(todoStore.dataTodo[category.id]![i-1]!.doAt),
+                                    list_saturday: isSaturday(todoStore.dataTodo[category.id]![i-1]!.doAt),
+                                    list_sunday: isSunday(todoStore.dataTodo[category.id]![i-1]!.doAt),
+                                }">{{ formatDate(todoStore.dataTodo[category.id]![i-1]!.doAt) }}</div>
                             <CardTask 
                                 :task="todoStore.dataTodo[category.id]![i-1]!"
                                 :category-color-id="category.colorId"/> 
@@ -96,6 +138,7 @@ const colorStyle = {
 
 <style scoped>
 .base_list{
+    margin: auto;
     overflow: auto;
     -webkit-overflow-scrolling: touch;   
     display: flex;
@@ -103,7 +146,6 @@ const colorStyle = {
     overflow: scroll;
     width: fit-content;
     height: calc(100vh - v-bind('sizeStore.heightInput') * 1px - v-bind('sizeStore.heightHeader') * 1px);
-    margin: 10px;
     border: 2px solid v-bind(colorStyle.border);
 }
 .list_table{
@@ -111,6 +153,7 @@ const colorStyle = {
     border-spacing: 0;
     height: 100%;
     table-layout: fixed;
+    max-width: fit-content;
 
     th{
         min-width: 200px;
@@ -129,5 +172,20 @@ const colorStyle = {
         padding: 15px;
         border-left: 1px solid v-bind(colorStyle.border);
     }
+}
+.list_date{
+    width: fit-content;
+}
+.list_today{
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onPrimary)); 
+    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.primary));  
+}
+.list_saturday{ 
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onSecondary)); 
+    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.secondary)); 
+}
+.list_sunday{
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onSecondaryHeavy)); 
+    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.secondaryHeavy)); 
 }
 </style>

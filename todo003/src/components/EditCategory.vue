@@ -3,17 +3,19 @@
 import Firebase from "../firebase_settings/index.js"
 import { useTodoStore } from '@/stores/todo';
 import { onMounted, reactive, ref, TransitionGroup, type Ref } from 'vue';
-import { BUTTON_SIZE, BUTTON_TYPE, CATEGORY_COLOR_INFO, COLOR_TYPE, DIALOG_TYPE, RESPONSE_TYPE } from '@/scripts/const';
+import { BUTTON_SIZE, BUTTON_TYPE, CATEGORY_COLOR_INFO, COLOR_TYPE, DIALOG_TYPE, RESPONSE_TYPE, FONT_TYPE } from '@/scripts/const';
 import { useColorStore } from '@/stores/color';
 import ConfirmDialog from './ConfirmDialog.vue';
 import ButtonMain from './ButtonMain.vue';
 import ColorPickerDialog from "./ColorPickerDialog.vue";
 import ButtonColor from "./ButtonColor.vue";
 import { onBeforeRouteLeave } from "vue-router";
+import { useSizeStore } from "@/stores/size.js";
 
 const auth = Firebase.auth
 const colorStore = useColorStore();
 const todoStore = useTodoStore();
+const sizeStore = useSizeStore();
 
 const confirmDialog = ref();
 const colorPickerDialog = ref();
@@ -148,65 +150,73 @@ onBeforeRouteLeave(async (to, from, next) => {
 <template>
     <div class="base_edit_category">
         <div class="add_category">
-            <div class="title_add_category">カテゴリー追加</div>
             <div class="content_add_category">
-                <input type="text" placeholder="new category" v-model="newName">
+                <input type="text" placeholder="カテゴリー名" v-model="newName" class="input_item">
                 <ButtonColor 
                     :button-type="BUTTON_TYPE.PRIMARY" 
                     :button-size="BUTTON_SIZE.SHORT"
                     :color="CATEGORY_COLOR_INFO[newColorId]?.color"
                     :heavy-color="CATEGORY_COLOR_INFO[newColorId]?.heavyColor"
                     :text-color="CATEGORY_COLOR_INFO[newColorId]?.textColor"
-                    v-on:click="getNewColor(newColorId)">色の選択</ButtonColor>
+                    class="select_color_button"
+                    v-on:click="getNewColor(newColorId)">色選択</ButtonColor>
                 <ButtonMain v-on:click="addCategory"
                     :button-type="BUTTON_TYPE.PRIMARY"
-                    :button-size="BUTTON_SIZE.SHORT">add</ButtonMain>
+                    :button-size="BUTTON_SIZE.SHORT">追加</ButtonMain>
             </div>
             
         </div> 
-        <div class="table_category">
-            <div class="title_table_category">カテゴリー編集</div>
-            <div>
-                <button v-on:click="updateListCategory">保存</button>
-                <div>・ダブルクリック：カテゴリー名編集</div>
-                <div>・ドラッグ：並び替え</div> 
+        <div class="table_category_container">
+    <div class="title_table_category">カテゴリー編集</div>
+            <div class="table_category">
+                
+                <div>
+                    <div>・ダブルクリック：カテゴリー名編集</div>
+                    <div>・ドラッグ：並び替え</div> 
+                </div>
+                <table class="content_table_category">
+                    <TransitionGroup name="list">
+                    <tr v-for="item, i in list" 
+                        :key="item.id"
+                        :draggable="!isEdittingName"
+                        v-on:dragstart="listDragLeave(i)"
+                        v-on:dragenter="listDragEnter(i)"
+                        v-on:dragend="listDragEnd"
+                        v-on:dragover.prevent
+                        class="category_item"
+                        :style="{background: CATEGORY_COLOR_INFO[item.colorId]?.heavyColor}"
+                        :class="{dragging: i==dragStartIndex}">
+                        <td >
+                            <div class="category_title">
+                                <div v-show="!isEdittingName" 
+                                    v-on:dblclick="isEdittingName = !isEdittingName">{{ item.name }}</div>
+                                <input type="text" v-show="isEdittingName" v-model="item.name" v-on:keydown="updateName">
+                            </div>
+                        </td>
+                        <td>
+                            <ButtonColor 
+                                :button-type="BUTTON_TYPE.PRIMARY" 
+                                :button-size="BUTTON_SIZE.SHORT"
+                                :color="CATEGORY_COLOR_INFO[item.colorId]?.color"
+                                :heavy-color="CATEGORY_COLOR_INFO[item.colorId]?.heavyColor"
+                                :text-color="CATEGORY_COLOR_INFO[item.colorId]?.textColor"
+                                v-on:click="changeColor(i, item.colorId)">色選択</ButtonColor>
+                        </td>
+                        <td>
+                            <ButtonMain 
+                                v-on:click="deleteCategory(i, item.name)"
+                                :button-type="BUTTON_TYPE.SECONDARY"
+                                :button-size="BUTTON_SIZE.SHORT">削除</ButtonMain>
+                        </td>
+                    </tr>
+                    </TransitionGroup>
+                </table>  
+                <ButtonMain v-on:click="updateListCategory"
+                        :button-type="BUTTON_TYPE.PRIMARY"
+                        :button-size="BUTTON_SIZE.SHORT">保存</ButtonMain>          
             </div>
-            <table class="content_table_category">
-                <TransitionGroup name="list">
-                <tr v-for="item, i in list" 
-                    :key="item.id"
-                    :draggable="!isEdittingName"
-                    v-on:dragstart="listDragLeave(i)"
-                    v-on:dragenter="listDragEnter(i)"
-                    v-on:dragend="listDragEnd"
-                    v-on:dragover.prevent
-                    
-                    :style="{background: CATEGORY_COLOR_INFO[item.colorId]?.heavyColor}"
-                    :class="{dragging: i==dragStartIndex}">
-                    <td class="category_item">
-                        <div v-show="!isEdittingName"
-                            v-on:dblclick="isEdittingName = !isEdittingName">{{ item.name }}</div>
-                        <input type="text" v-show="isEdittingName" v-model="item.name" v-on:keydown="updateName">
-                    </td>
-                    <td>
-                        <ButtonColor 
-                            :button-type="BUTTON_TYPE.PRIMARY" 
-                            :button-size="BUTTON_SIZE.SHORT"
-                            :color="CATEGORY_COLOR_INFO[item.colorId]?.color"
-                            :heavy-color="CATEGORY_COLOR_INFO[item.colorId]?.heavyColor"
-                            :text-color="CATEGORY_COLOR_INFO[item.colorId]?.textColor"
-                            v-on:click="changeColor(i, item.colorId)">色の選択</ButtonColor>
-                    </td>
-                    <td>
-                        <ButtonMain 
-                            v-on:click="deleteCategory(i, item.name)"
-                            :button-type="BUTTON_TYPE.SECONDARY"
-                            :button-size="BUTTON_SIZE.SHORT">削除</ButtonMain>
-                    </td>
-                </tr>
-                </TransitionGroup>
-            </table>            
         </div>
+       
     </div>
     <ConfirmDialog ref="confirmDialog"></ConfirmDialog>
     <ColorPickerDialog ref="colorPickerDialog"/>
@@ -214,15 +224,35 @@ onBeforeRouteLeave(async (to, from, next) => {
 
 <style scoped>
 .base_edit_category {
-    margin: 10px;
+    padding: 10px;
+    margin: auto;
+    width: fit-content;
+    height: calc(100vh - v-bind('sizeStore.heightHeader') * 1px);
 }
 .add_category {
-    margin: 0 0 10px;
-    border: 1px solid black
+    border: 2px solid black;
+    margin-bottom: 10px;
+    width: fit-content;
+}
+.input_item {
+    margin: 2px 5px 2px 5px;
+    padding-left: 5px;
+    max-width: 200px;
+    background: white;
+    border: 2px solid black;
+    outline:0;
+    font-size: medium;
+    font-family: v-bind(FONT_TYPE.MAIN_SENTENSE);
+}
+.input_item::placeholder{
+   font-family: v-bind(FONT_TYPE.UI_SMALL); 
+}
+.select_color_button{
+    border: 1px solid black;
+    margin-right: 10px;
 }
 .table_category {
-    margin: 0 0 10px;
-    border: 1px solid black;
+    padding: 10px;
     color: v-bind(colorStore.getColorBy(COLOR_TYPE.onPrimary));
     background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.primary));
 }
@@ -233,8 +263,9 @@ onBeforeRouteLeave(async (to, from, next) => {
 }
 .content_add_category {
     padding: 5px;
-    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onSecondary));
-    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.secondary));
+    display: flex;
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onBackground));
+    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.background));
 }
 
 .title_table_category {
@@ -245,16 +276,23 @@ onBeforeRouteLeave(async (to, from, next) => {
 .content_table_category {
     padding: 5px;
     margin: 10px;
-    border-radius: 10px;
     border-collapse: collapse;
     color: v-bind(colorStore.getColorBy(COLOR_TYPE.onPrimary));
     background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.primary));
+}
+.table_category_container{
+    border: 2px solid black;
+    height: fit-content;
 }
 .dragging {
   opacity: 0.5;
 }
 .category_item {
-    padding: 0 10px 0 10px;
+    box-shadow: 3px 3px gray;
+}
+.category_title{
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 /* リストアニメーション用 */

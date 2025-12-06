@@ -5,7 +5,6 @@ import HeaderComponent from '@/components/HeaderComponent.vue';
 </script>
 
 <template>
-    <HeaderComponent/>
     <InputTodo/>
     <ListTodo/>
 </template>

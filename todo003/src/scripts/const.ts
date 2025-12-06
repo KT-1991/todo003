@@ -17,6 +17,7 @@ export const BUTTON_TYPE = {
     PRIMARY: "primary",
     SECONDARY: "secondary",
     TERTIARY: "tertiary",
+    QUATERNARY: "quaternary",
 }
 export const BUTTON_SIZE = {
     SHORT: "short",
@@ -25,11 +26,10 @@ export const BUTTON_SIZE = {
 }
 
 export const FONT_TYPE = {
-    UI_LARGE: "Oswald-VariableFont_wght",
+    UI_LARGE: "canarymini",
     UI_SMALL: "YDWbananaslipplus",
     MAIN_SENTENSE: "NotoSansJP-Regular",
 }
-
 export const SQL_TEXT = {
     TABLE_INFO_CATEGORY: "PRAGMA table_info(ms_category);",
     SELECT_CATEGORY: `

@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRoute } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
 import { useColorStore } from './stores/color';
 import { COLOR_TYPE, FONT_TYPE } from './scripts/const';
-
+import HeaderComponent from './components/HeaderComponent.vue';
 const colorStore = useColorStore();
-
+const route = useRoute();
 
 </script>
 
 <template>
+  <div v-show="route.path != '/login'">
+    <HeaderComponent/>
+  </div>
   <div class="base_main">
     <RouterView/>
   </div>
@@ -54,6 +57,21 @@ const colorStore = useColorStore();
   font-family: 'Oswald-VariableFont_wght';
   src: url('@/assets/fonts/Oswald-VariableFont_wght.ttf') format('truetype');
 }
-
+@font-face {
+  font-family: 'komadori-mini';
+  src: url('@/assets/fonts/komadori-mini.otf') format('opentype');
+}
+@font-face {
+  font-family: 'YDWaosagi';
+  src: url('@/assets/fonts/YDWaosagi.otf') format('opentype');
+}
+@font-face {
+  font-family: 'YDWyadewanoji';
+  src: url('@/assets/fonts/YDWyadewanoji.otf') format('opentype');
+}
+@font-face {
+  font-family: 'canarymini';
+  src: url('@/assets/fonts/canarymini.otf') format('opentype');
+}
 
 </style>

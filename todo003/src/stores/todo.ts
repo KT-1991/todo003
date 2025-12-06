@@ -234,22 +234,32 @@ export const useTodoStore = defineStore("todo", {
       }
     },
     async completeTodo(id: string){
+      let isNull = false;
 
       for(let i=0; i < this.listTodo.length; i++){
         if(this.listTodo[i]?.id == id){
           if(this.listTodo[i]!.completedAt == null){
             this.listTodo[i]!.completedAt = new Date();
+            isNull = false;
           }else{
             this.listTodo[i]!.completedAt = null;
+            isNull = true;
           }
         }
       }
 
       const docRef = doc(this.$state.db, "userData", this.$state.userId, "todo", id);
       try {
-        await updateDoc(docRef, {
-          completedAt: serverTimestamp(),
-        });
+        if(isNull){
+          await updateDoc(docRef, {
+            completedAt: null,
+          });
+        }else{
+          await updateDoc(docRef, {
+            completedAt: serverTimestamp(),
+          });          
+        }
+
       }catch(error){
         console.log(error)
         alert("エラーが発生しました")

@@ -27,6 +27,28 @@ const showDetail = () => {
     isVisibleDetail.value = !isVisibleDetail.value
 }
 
+const beforeEnter = (el: any) => {
+  el.style.height = '0';
+}
+
+const enterTrans = (el: any, done: any) => {
+  // Get the actual height of the element
+  el.style.height = el.scrollHeight + 'px';
+  // Add a transition listener to call 'done' when finished
+  el.addEventListener('transitionend', done);
+}
+
+const beforeLeave = (el: any) => {
+  el.style.height = el.scrollHeight + 'px';
+}
+
+const leaveTrans = (el: any, done: any) => {
+  // Ensure the height is explicitly set before animating to 0
+  getComputedStyle(el).height; // Triggers a reflow
+  el.style.height = '0';
+  el.addEventListener('transitionend', done);
+}
+
 </script>
 
 <template>
@@ -48,7 +70,16 @@ const showDetail = () => {
                     </div>
                 </div>                
             </div>
-            <div class="card_task_detail" v-show="isVisibleDetail">{{ task.detail }}</div>
+            <Transition 
+                @before-enter="beforeEnter"
+                @enter="enterTrans"
+                @before-leave="beforeLeave"
+                @leave="leaveTrans"
+                :css="false">
+                <div class="card_task_detail" v-show="isVisibleDetail">
+                    <div class="card_task_detail_content">{{ task.detail }}</div>
+                </div>
+            </Transition>
         </div>
     </div>
 </template>
@@ -212,8 +243,13 @@ const showDetail = () => {
 }
 .card_task_detail{
     margin-left: 10px;
-    padding: 3px;
     color: v-bind(colorStore.getColorBy(COLOR_TYPE.onBackground));
     background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.background));
+
+    transition: height 0.5s ease-in-out; /* Apply CSS transition to the height property */
+    overflow: hidden;
+}
+.card_task_detail_content{
+    margin: 5px;
 }
 </style>

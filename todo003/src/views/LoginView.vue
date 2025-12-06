@@ -6,6 +6,11 @@ import Firebase from "../firebase_settings/index.js"
 import { ref } from 'vue';
 import router from '@/router/index.js';
 import LoadingAnimationComponent from '@/components/LoadingAnimationComponent.vue';
+import { useColorStore } from '@/stores/color.js';
+import { FONT_TYPE, COLOR_TYPE, BUTTON_SIZE, BUTTON_TYPE } from '@/scripts/const.js';
+import ButtonMain from '@/components/ButtonMain.vue';
+
+const colorStore = useColorStore();
 
 const auth = Firebase.auth
 
@@ -97,44 +102,122 @@ const submitPasswordResetEmail = async () => {
     })
 }
 
+const nextFocus = (event: any) => {
+    event.target.nextSibling.focus();
+}
+
 </script>
 
 <template>
-<header>
-            <div class="title">Vue Firebase Example</div>
-        </header>
-
-        <main>
-            <button v-on:click="register">register</button>
-            <div class="container">
-                <p>ID(メールアドレス)</p>
-                <input type="email" v-model="inputValueId">
-                <!-- この下の<p></p>はテキストボックスを中央に配置するために必要な疑似要素です -->
-                <p></p>
-            </div>
-
-            <div class="container">
-                <p>パスワード</p>
-                <input type="password" v-model="inputValuePassword">
-                <!-- この下の<p></p>はテキストボックスを中央に配置するために必要な疑似要素です -->
-                <p></p>
-            </div>
-
-            <div class="message">
-                <p class="red">{{ errorMessage }}&nbsp;</p>
-            </div>
-
-            <div>
-                <button class="btn_standard" type="submit" v-on:click="logIn">ログインする</button>
-            </div>
-            <div>
-                <button v-on:click="submitPasswordResetEmail">パスワード変更</button>
-            </div>
-            <!-- ローディングアニメーション -->
-            <div class="loading_animation_container">
-                <div class="loading_animation" v-if="isLoading">
-                    <LoadingAnimationComponent></LoadingAnimationComponent>
+    <main>
+        <div class="login_base">
+            <div class="login_base_container">
+                <div class="login_title">タスクカレンダー</div>
+                <div class="login_input_container">
+                    <input class="login_input_item" 
+                            v-on:keydown.enter="nextFocus"
+                            type="email" 
+                            v-model="inputValueId" 
+                            placeholder="ID(メールアドレス)">
+                    <input class="login_input_item" 
+                            v-on:keydown.enter="logIn"
+                            type="password" 
+                            v-model="inputValuePassword" 
+                            placeholder="パスワード">                      
                 </div>
+           
+                <div class="login_message" v-show="errorMessage.length > 0">
+                    <p class="red">{{ errorMessage }}</p>
+                </div>
+
+                <div class="login_button_container">
+                    <ButtonMain 
+                            :button-type="BUTTON_TYPE.TERTIARY"
+                            :button-size="BUTTON_SIZE.SHORT"
+                            v-on:click="logIn">
+                                <span>ログイン</span>
+                    </ButtonMain>
+                    <ButtonMain 
+                            :button-type="BUTTON_TYPE.TERTIARY"
+                            :button-size="BUTTON_SIZE.SHORT"
+                            v-on:click="register">
+                                <span>登録</span>
+                    </ButtonMain>
+                    <ButtonMain 
+                            :button-type="BUTTON_TYPE.TERTIARY"
+                            :button-size="BUTTON_SIZE.SHORT"
+                            v-on:click="submitPasswordResetEmail">
+                                <span>パスワード変更</span>
+                    </ButtonMain>
+                </div>
+            </div>            
+        </div>
+
+
+        <!-- ローディングアニメーション -->
+        <div class="loading_animation_container">
+            <div class="loading_animation" v-if="isLoading">
+                <LoadingAnimationComponent></LoadingAnimationComponent>
             </div>
-        </main>
+        </div>             
+    </main>
 </template>
+
+<style scoped>
+.login_base{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.login_base_container{
+    border: 5px solid black;
+    height: fit-content;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.background));
+    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.background));
+}
+.login_title {
+    text-align: center;
+    font-size: large;
+    width: 100%;
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onPrimaryHeavy));
+    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.primaryHeavy));
+    font-family: v-bind(FONT_TYPE.UI_LARGE);
+}
+.login_button_container{
+    display: flex;
+    margin: 10px;
+}
+.login_input_container{
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+}
+.login_input_item {
+    margin: 2px 5px 2px 5px;
+    padding-left: 5px;
+    max-width: 200px;
+    background: white;
+    border: 2px solid black;
+    outline:0;
+    font-size: medium;
+    font-family: v-bind(FONT_TYPE.MAIN_SENTENSE);;
+}
+.login_input_item:focus{
+    border: 3px solid v-bind(colorStore.getColorBy(COLOR_TYPE.primary)); 
+}
+.login_input_item::placeholder{
+   font-family: v-bind(FONT_TYPE.UI_SMALL); 
+}
+.login_message{
+    margin: 10px;
+    padding: 5px;
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onError));
+    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.error));
+}
+</style>
