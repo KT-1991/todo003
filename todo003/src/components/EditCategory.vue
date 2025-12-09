@@ -73,18 +73,18 @@ const updateListCategory = async () => {
 
 const addCategory = () => {
     if(newName.value.trim() == ""){
+        confirmDialog.value!.openDialog(DIALOG_TYPE.ERROR ,"エラー", "カテゴリー名が未入力です");
         return;
     }
-    console.log(newName.value);
     todoStore.addCategory(newName.value, newColorId.value);
     todoStore.init();
 }
-const deleteCategory = async (index: number, name: string) => {
-    const result = await confirmDialog.value.openDialog(DIALOG_TYPE.ALERT, "警告", "削除対象： " + name +"\r\n削除すると復元できません。関連するすべてのTODOも削除されます。よろしいですか？");
+const deleteCategory = async (index: number, name: string, id: string) => {
+    const result = await confirmDialog.value.openDialog(DIALOG_TYPE.ALERT, "警告", "削除対象： " + name +"\r\n削除すると復元できません。\r\n関連するすべてのTODOも削除されます。\r\nよろしいですか？");
     if(result == RESPONSE_TYPE.CANCEL){
         return;
     }
-    //todoStore.deleteCategory(id);
+    todoStore.deleteCategory(id);
     list.value.splice(index, 1);
     todoStore.initCategory();
 }
@@ -204,7 +204,7 @@ onBeforeRouteLeave(async (to, from, next) => {
                         </td>
                         <td>
                             <ButtonMain 
-                                v-on:click="deleteCategory(i, item.name)"
+                                v-on:click="deleteCategory(i, item.name, item.id)"
                                 :button-type="BUTTON_TYPE.SECONDARY"
                                 :button-size="BUTTON_SIZE.SHORT">削除</ButtonMain>
                         </td>

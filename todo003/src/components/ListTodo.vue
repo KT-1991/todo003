@@ -144,7 +144,7 @@ const colorStyle = {
     display: flex;
     background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.background));
     overflow: scroll;
-    width: fit-content;
+    max-width: fit-content;
     height: calc(100vh - v-bind('sizeStore.heightInput') * 1px - v-bind('sizeStore.heightHeader') * 1px);
     border: 2px solid v-bind(colorStyle.border);
 }
@@ -153,7 +153,6 @@ const colorStyle = {
     border-spacing: 0;
     height: 100%;
     table-layout: fixed;
-    max-width: fit-content;
 
     th{
         min-width: 200px;

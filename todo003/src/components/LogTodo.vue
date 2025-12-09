@@ -5,8 +5,6 @@ import { useTodoStore } from '@/stores/todo';
 import { onAuthStateChanged } from 'firebase/auth';
 import { computed, onMounted } from 'vue';
 
-
-const auth = Firebase.auth
 const todoStore = useTodoStore();
 
 const addTestData: any = async () => {

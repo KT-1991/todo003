@@ -6,9 +6,11 @@ import Firebase from "../firebase_settings/index.js"
 import { ref } from 'vue';
 import router from '@/router/index.js';
 import LoadingAnimationComponent from '@/components/LoadingAnimationComponent.vue';
+import LoadingAnimationComponent02 from '@/components/LoadingAnimationComponent02.vue';
 import { useColorStore } from '@/stores/color.js';
 import { FONT_TYPE, COLOR_TYPE, BUTTON_SIZE, BUTTON_TYPE } from '@/scripts/const.js';
 import ButtonMain from '@/components/ButtonMain.vue';
+import QrCodeVue from '@/components/QrCode.vue';
 
 const colorStore = useColorStore();
 
@@ -150,14 +152,15 @@ const nextFocus = (event: any) => {
                                 <span>パスワード変更</span>
                     </ButtonMain>
                 </div>
-            </div>            
+                <QrCodeVue/>
+            </div>               
         </div>
-
-
+        
+        
         <!-- ローディングアニメーション -->
         <div class="loading_animation_container">
             <div class="loading_animation" v-if="isLoading">
-                <LoadingAnimationComponent></LoadingAnimationComponent>
+                <LoadingAnimationComponent02></LoadingAnimationComponent02>
             </div>
         </div>             
     </main>
@@ -168,6 +171,7 @@ const nextFocus = (event: any) => {
     height: 100vh;
     width: 100vw;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }

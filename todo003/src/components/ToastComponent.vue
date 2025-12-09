@@ -2,13 +2,7 @@
 import { onMounted, onUnmounted, type Ref, ref } from 'vue'
 import { BUTTON_TYPE, DIALOG_TYPE, RESPONSE_TYPE } from '@/scripts/const'
 import { useColorStore } from '@/stores/color';
-import { COLOR_TYPE } from '@/scripts/const';
-import ButtonMain from './ButtonMain.vue';
-import IconBase from './IconTemplate.vue';
-import IconTemplate from './IconTemplate.vue';
-import IconAlert from './icons/IconAlert.vue';
-import IconInfo from './icons/IconInfo.vue';
-import IconError from './icons/IconError.vue';
+import { COLOR_TYPE, FONT_TYPE } from '@/scripts/const';
 
 const colorStore = useColorStore();
 
@@ -63,15 +57,17 @@ async function sendToast(inputTitle: string) {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 150;
+    outline: 0;
+    border: 0;
 }
 .toast{
     width: 100vw;
-    color: white;
     text-align: center;
-    background-color: black;
     transition: 0.5s;
-    border: 0;
+    border: 5px solid v-bind(colorStore.getColorBy(COLOR_TYPE.onSecondaryHeavy));
     border-radius: 0;
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onSecondaryHeavy));
+    background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.secondaryHeavy));
 }
 
 .fade-enter-active,

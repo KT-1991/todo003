@@ -1,6 +1,6 @@
 // src/stores/counter.ts
 import { defineStore } from "pinia";
-import { CATEGORY_COLOR_INFO, COLOR_INFO, COLOR_TYPE, LOCAL_STORAGE, SQL_TEXT, TABLE_INFO } from "@/scripts/const";
+import { CATEGORY_COLOR_INFO, COLOR_INFO, COLOR_TYPE, LOCAL_STORAGE } from "@/scripts/const";
 
 // カウンターストアを定義
 export const useColorStore = defineStore("color", {

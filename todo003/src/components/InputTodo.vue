@@ -29,21 +29,29 @@ const elemInputContainer = ref();
 const sizeStore = useSizeStore();
 
 const register = async () => {
-            // 書き込み開始
-            isLoading.value = true
-            const doAtLocal = new Date();
-            const doAtUTC = new Date(doAt.value)
-            doAtLocal.setFullYear(doAtUTC.getFullYear());
-            doAtLocal.setMonth(doAtUTC.getMonth());
-            doAtLocal.setDate(doAtUTC.getDate());
 
-            await todoStore.addTodo(selectedCategory.value as any, title.value, detail.value, doAtLocal);
+    if(selectedCategory.value == ""){
+        confirmDialog.value!.openDialog(DIALOG_TYPE.ERROR ,"エラー", "カテゴリーが未入力です");
+        return;
+    }
+    if(title.value.trim() == ""){
+        confirmDialog.value!.openDialog(DIALOG_TYPE.ERROR ,"エラー", "タスクが未入力です");
+        return;
+    }
+    // 書き込み開始
+    isLoading.value = true
+    const doAtLocal = new Date();
+    const doAtUTC = new Date(doAt.value)
+    doAtLocal.setFullYear(doAtUTC.getFullYear());
+    doAtLocal.setMonth(doAtUTC.getMonth());
+    doAtLocal.setDate(doAtUTC.getDate());
 
-            //await todoStore.init()
-            // 書き込み終了
-            isLoading.value = false
-            //confirmDialog.value!.openDialog(DIALOG_TYPE.INFO ,"title", "detail")
-            toast.value!.sendToast("registered");
+    await todoStore.addTodo(selectedCategory.value as any, title.value, detail.value, doAtLocal);
+
+    //await todoStore.init()
+    // 書き込み終了
+    isLoading.value = false
+    toast.value!.sendToast("登録しました");
 }
 const getSuggestion = (text: string) => {
     title.value = text;

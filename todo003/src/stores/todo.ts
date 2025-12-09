@@ -2,7 +2,7 @@ import { addDoc, collection, doc, Firestore, getDocs, limit, orderBy, query, run
 import { defineStore } from "pinia";
 //@ts-ignore
 import Firebase from "../firebase_settings/index.js"
-import { CATEGORY_COLOR_INFO } from "@/scripts/const.js";
+import { CATEGORY_COLOR_INFO, LOCAL_STORAGE } from "@/scripts/const.js";
 
 export interface Task {
   id: string, 
@@ -32,6 +32,7 @@ export const useTodoStore = defineStore("todo", {
     listTodoForSuggestions: [] as Array<{
                             createdAt: Date, 
                             title: string, }>,
+    hasSuggestion: true as boolean,
     suggestions: [] as Array<string>,
   }),
   getters: {
@@ -108,9 +109,12 @@ export const useTodoStore = defineStore("todo", {
   
   actions: {
     async init(){
+      this.initSetting();
       await this.initCategory();
       await this.initTodo();
-      await this.initTodoForSuggestions();
+      if(this.hasSuggestion){
+        await this.initTodoForSuggestions();
+      }
     },  
     async initForLog(){
       this.initCategory();
@@ -156,6 +160,12 @@ export const useTodoStore = defineStore("todo", {
           this.sortByDate(this.dataTodo);
       } catch (error) {
             console.error("Error getting posts: ", error);
+      }
+    },
+    initSetting(){
+      let savedValue = localStorage.getItem(LOCAL_STORAGE.SUGGEST_TASK);
+      if(savedValue != null){
+        this.hasSuggestion = JSON.parse( savedValue );
       }
     },
     async initTodoForSuggestions(){
@@ -310,6 +320,17 @@ export const useTodoStore = defineStore("todo", {
         alert("エラーが発生しました")
       }
     },
+    async deleteCategory(categoryId: string){
+      const docRef = doc(this.$state.db, "userData", this.$state.userId, "category", categoryId);
+      try {
+        await updateDoc(docRef, {
+         deletedAt: serverTimestamp(),
+        });
+      } catch(error) {
+        console.log(error)
+        alert("エラーが発生しました")
+      } 
+    },
     sortByDate(todoData: {[id: string]: Array<any>}){
       this.listCategory.forEach(category => {
         todoData[category.id]?.sort((a, b): number => {
@@ -425,6 +446,13 @@ export const useTodoStore = defineStore("todo", {
           })
         })
       })
+    },
+    saveSuggestSetting(hasSuggest: boolean){
+      localStorage.setItem(LOCAL_STORAGE.SUGGEST_TASK, JSON.stringify(hasSuggest));
+      this.hasSuggestion = hasSuggest;
+      if(!hasSuggest){
+        this.suggestions.splice(0);
+      }
     }
   },
 

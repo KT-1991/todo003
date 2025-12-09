@@ -96,7 +96,7 @@ onMounted(() => {
                     isLoading.value = true;
                     await todoStore.init();
                     isLoading.value = false;
-                    toast.value!.sendToast("loaded")
+                    toast.value!.sendToast("ロード完了")
                     
                 }                
             }else{
@@ -164,6 +164,12 @@ onMounted(() => {
                             :button-type="BUTTON_TYPE.QUATERNARY" 
                             :button-size="BUTTON_SIZE.SHORT"
                             >ログ</ButtonMain>   
+                    </div>
+                    <div v-on:click="goToPage('/setting', $event)">
+                        <ButtonMain 
+                            :button-type="BUTTON_TYPE.QUATERNARY" 
+                            :button-size="BUTTON_SIZE.SHORT"
+                            >設定</ButtonMain>   
                     </div>
                 </div>
                 <div class="header_current_position"></div>

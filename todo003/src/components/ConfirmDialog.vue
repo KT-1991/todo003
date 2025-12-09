@@ -57,8 +57,10 @@ async function openDialog(dialogType :string, inputTitle: string, inputDetail: s
   })
 
   const result = await promise
-  dialog?.value?.close()
   open.value = false
+  await new Promise(resolve => setTimeout(resolve, 300))
+  dialog?.value?.close()
+  
   return result
 }
 
@@ -83,23 +85,27 @@ onUnmounted(() => {
 </script>
 
 <template>
+  
   <dialog ref="dialog" class="modal_dialog">
-    <div v-if="open">
-        <div class="modal_title">{{ title }}</div>
-        <div class="modal_icon">
+    <Transition name="fade">
+    <div v-if="open" class="dialog_container">
+      <div class="modal_title">{{ title }}</div>
+      <div class="modal_icon">
             <IconTemplate>
                 <IconInfo v-if="dialogPattern==DIALOG_TYPE.INFO"/>
                 <IconAlert v-if="dialogPattern==DIALOG_TYPE.ALERT"/>
                 <IconError v-if="dialogPattern==DIALOG_TYPE.ERROR"/>
             </IconTemplate>
-        </div>
-        <div class="modal_content">{{ detail }}</div>
+      </div>
+      <div class="modal_content">{{ detail }}</div>
       <div class="modal_action">
         <ButtonMain :button-type="BUTTON_TYPE.PRIMARY" class="modal_button" v-if="hasOK" v-on:click="onDialogAction('close')">OK</ButtonMain> 
         <ButtonMain :button-type="BUTTON_TYPE.SECONDARY" class="modal_button" v-if="hasCancel" v-on:click="onDialogAction('cancel')">Cancel</ButtonMain>
       </div>
     </div>
+    </Transition>
   </dialog>
+  
 </template>
 
 <style scoped>
@@ -109,10 +115,19 @@ onUnmounted(() => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 0;
+  padding: 0; 
+  outline: 0;
+  border: 0;
+  background-color: transparent;
+}
+.dialog_container{
+  border: 2px solid black;
+  box-shadow: 3px 3px black;
+  background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.background));
 }
 .modal_title{
     padding: 0 0 0 10px;
+    color: v-bind(colorStore.getColorBy(COLOR_TYPE.onSecondaryHeavy));
     background-color: v-bind(colorStore.getColorBy(COLOR_TYPE.secondaryHeavy));
 }
 .modal_content{
@@ -133,5 +148,15 @@ onUnmounted(() => {
 .modal_icon {
     display: flex;
     justify-content: center;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
